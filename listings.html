@@ -78,8 +78,18 @@
     <section>
         <div class="container animate-slide-up">
             <div class="results-header">
-                <h2>Explore Properties</h2>
-                <span id="resultCount" style="color: var(--text-muted);">Loading...</span>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <h2>Explore Properties</h2>
+                    <span id="resultCount" style="color: var(--text-muted);">Loading...</span>
+                </div>
+                <div class="sort-box">
+                    <select id="sortSelect" onchange="applyFilters()" style="padding: 8px 16px; border: 1px solid #ccc; border-radius: 24px; font-size: 0.9rem; background: var(--white); outline: none; color: var(--text-main);">
+                        <option value="default">Sort: Recommended</option>
+                        <option value="priceLow">Price: Low to High</option>
+                        <option value="priceHigh">Price: High to Low</option>
+                        <option value="rating">Top Rated</option>
+                    </select>
+                </div>
             </div>
 
             <div class="listings-layout">
@@ -180,7 +190,10 @@
                             <div class="price">
                                 <strong>${formatCurrency(p.price)}</strong> / mo
                             </div>
-                            <a href="details.html?id=${p.id}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.9rem;">Details</a>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-outline save-btn" data-id="${p.id}" onclick="toggleSaveProperty('${p.id}', this)" style="padding: 6px; font-size: 0.9rem; border: none; font-weight: 600;">♡ Save</button>
+                                <a href="details.html?id=${p.id}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.9rem;">Details</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -208,8 +221,18 @@
                 }
                 return match;
             });
+            
+            const sortVal = document.getElementById('sortSelect').value;
+            if (sortVal === 'priceLow') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sortVal === 'priceHigh') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (sortVal === 'rating') {
+                filtered.sort((a, b) => b.rating - a.rating);
+            }
 
             renderCards(filtered);
+            initSaveButtons();
         }
     </script>
 </body>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srivachav STAY SAFE | Login</title>
+    <meta name="description" content="Log in to your STAY SAFE account.">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px); /* Account for navbar */
+            padding: 40px 5%;
+            margin-top: 80px;
+        }
+
+        .auth-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--white);
+            border: 1px solid #eaeaea;
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .auth-form-side {
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-image-side {
+            position: relative;
+            background: #f5f5f5;
+            border-left: 1px solid #eaeaea;
+            height: 100%;
+            min-height: 500px; /* For mobile */
+        }
+
+        .auth-image-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%) contrast(1.1);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 1rem;
+            background: transparent;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 900px) {
+            .auth-card {
+                grid-template-columns: 1fr;
+            }
+            .auth-image-side {
+                min-height: 300px;
+                order: -1; /* Puts image above the form on small screens */
+            }
+            .auth-form-side {
+                padding: 40px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">STAY SAFE</a>
+        <div class="mobile-toggle">MENU</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="listings.html">Explore</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="owner.html">Owner Hub</a>
+            <a href="login.html" class="profile-btn active" style="text-decoration: none;">LOGIN</a>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="auth-container">
+        <div class="auth-card animate-slide-up">
+            <div class="auth-form-side">
+                <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 12px;">Welcome Back.</h1>
+                <p class="hero-subtitle" style="margin-bottom: 40px; font-size: 1rem;">Enter your credentials to access your premium stays.</p>
+                
+                <form id="loginForm">
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label style="margin-bottom: 12px;">I am a...</label>
+                        <div style="display: flex; gap: 16px;">
+                            <label style="flex: 1; border: 1px solid #ccc; padding: 12px; text-align: center; cursor: pointer; text-transform: none; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <input type="radio" name="accountType" value="user" checked style="width: auto; margin: 0; padding: 0;"> Guest
+                            </label>
+                            <label style="flex: 1; border: 1px solid #ccc; padding: 12px; text-align: center; cursor: pointer; text-transform: none; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <input type="radio" name="accountType" value="owner" style="width: auto; margin: 0; padding: 0;"> Property Owner
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label for="password">Password</label>
+                        <div style="display: flex; position: relative;">
+                           <input type="password" id="password" required placeholder="••••••••" style="padding-right: 60px;">
+                           <button type="button" id="togglePassword" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--primary); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;">SHOW</button>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; font-size: 0.85rem;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="remember" style="width: auto; margin: 0;"> Remember me
+                        </label>
+                        <a href="#" style="color: var(--text-muted); text-decoration: underline;">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%;">Log In -></button>
+                </form>
+                
+                <div style="margin-top: 32px; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+                    Don't have an account? <a href="#" style="color: var(--primary); font-weight: 500; text-decoration: underline;">Sign up</a>
+                </div>
+            </div>
+            <div class="auth-image-side">
+                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1000&q=80" alt="Luxury interior">
+                <div style="position: absolute; bottom: 0; left: 0; background: white; padding: 20px; border-top: 1px solid #eaeaea; border-right: 1px solid #eaeaea;">
+                    <p style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 5px;">ESTATE 24</p>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.1em;">LUXURY LIVING</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // Login Features
+            const loginForm = document.getElementById('loginForm');
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (togglePassword) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.textContent = type === 'password' ? 'SHOW' : 'HIDE';
+                });
+            }
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    const remember = document.getElementById('remember').checked;
+                    
+                    const accountTypeElement = document.querySelector('input[name="accountType"]:checked');
+                    const accountType = accountTypeElement ? accountTypeElement.value : 'user';
+
+                    if(!email || !password) {
+                        if (typeof showToast === 'function') showToast('Please fill all fields', 'error');
+                        return;
+                    }
+
+                    // Simulate loading
+                    const originalText = loginBtn.innerHTML;
+                    loginBtn.innerHTML = 'Authenticating...';
+                    loginBtn.disabled = true;
+
+                    setTimeout(() => {
+                        // Extract name from email and update user in local storage
+                        const userName = email.split('@')[0];
+                        const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
+                        
+                        const usersData = JSON.parse(localStorage.getItem('1268_users')) || {};
+                        usersData.current = { name: formattedName, role: accountType, email: email };
+                        localStorage.setItem('1268_users', JSON.stringify(usersData));
+                        
+                        if (remember) {
+                            localStorage.setItem('1268_remember', 'true');
+                        }
+
+                        if (typeof showToast === 'function') showToast(`Login successful! Redirecting to ${accountType === 'owner' ? 'Owner Hub' : 'Dashboard'}...`, 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = accountType === 'owner' ? 'owner.html' : 'dashboard.html';
+                        }, 1500);
+                    }, 1000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

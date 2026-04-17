@@ -17,7 +17,7 @@
             <a href="listings.html">Explore</a>
             <a href="dashboard.html">Dashboard</a>
             <a href="owner.html">Owner Hub</a>
-            <div class="profile-btn" onclick="window.location.href='dashboard.html'">A</div>
+            <a href="login.html" class="profile-btn" style="text-decoration: none;">LOGIN</a>
         </div>
     </nav>
 
@@ -123,7 +123,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const featuredContainer = document.getElementById('featuredGrid');
-            const properties = getProperties().slice(0, 3); // top 3
+            const properties = getProperties().slice(0, 20); // top 20
 
             if(properties.length === 0) {
                 featuredContainer.innerHTML = '<div class="skeleton" style="height: 300px; width: 100%;"></div>'.repeat(3);
@@ -149,7 +149,10 @@
                             <div class="price">
                                 <strong>${formatCurrency(p.price)}</strong> / month
                             </div>
-                            <a href="details.html?id=${p.id}" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">View -></a>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-outline save-btn" data-id="${p.id}" onclick="toggleSaveProperty('${p.id}', this)" style="padding: 8px; font-size: 0.9rem; border: none; font-weight: 600;">♡ Save</button>
+                                <a href="details.html?id=${p.id}" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">View -></a>
+                            </div>
                         </div>
                     </div>
                 </div>

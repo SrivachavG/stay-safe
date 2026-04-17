@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srivachav STAY SAFE | Support Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+            margin-top: 100px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-menu a {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(107, 70, 193, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Chat Layout */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 24px;
+            background: var(--white);
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .chat-header-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #111, #444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 24px;
+            background: #fafafa;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .msg-bubble {
+            max-width: 70%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .msg-support {
+            align-self: flex-start;
+            background: var(--white);
+            border: 1px solid #eaeaea;
+            border-bottom-left-radius: 4px;
+            color: var(--text-main);
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: var(--primary);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input-area {
+            padding: 24px;
+            background: var(--white);
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            gap: 16px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 16px 24px;
+            border: 1px solid #ccc;
+            outline: none;
+            border-radius: 24px;
+            font-size: 1rem;
+            background: #fafafa;
+        }
+
+        .chat-input-area input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-send {
+            padding: 0 32px;
+            border-radius: 24px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+            .chat-container { height: calc(100vh - 200px); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">STAY SAFE</a>
+        <div class="mobile-toggle">MENU</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="listings.html">Explore</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <div class="profile-btn" id="navAvatar">A</div>
+        </div>
+    </nav>
+
+    <div class="container animate-slide-up">
+        <div class="dashboard-layout">
+            <aside class="sidebar-menu glass-panel" style="padding: 24px; height: fit-content;">
+                <h3 style="margin-bottom: 20px;">My Account</h3>
+                <a href="dashboard.html">Overview & Bookings</a>
+                <a href="transactions.html">Transactions & Rent</a>
+                <a href="matches.html">Roommate Matches</a>
+                <a href="support.html" class="active">Support Chat</a>
+            </aside>
+
+            <main>
+                <div class="chat-container glass-panel">
+                    <div class="chat-header">
+                        <div class="chat-header-img">24</div>
+                        <div>
+                            <h3 style="margin-bottom: 4px; font-size: 1.1rem;">STAY SAFE Support</h3>
+                            <p style="color: #38a169; font-size: 0.8rem; font-weight: 500;">● Online</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-body" id="chatBody">
+                        <div class="msg-bubble msg-support">
+                            Hi there! I'm your STAY SAFE virtual assistant. How can I help you today?
+                        </div>
+                    </div>
+                    
+                    <form class="chat-input-area" id="chatForm">
+                        <input type="text" id="chatInput" placeholder="Type your message here..." autocomplete="off" required>
+                        <button type="submit" class="btn btn-primary btn-send">Send</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const usersStr = localStorage.getItem('1268_users');
+            if(usersStr) {
+                const users = JSON.parse(usersStr);
+                const initial = users.current.name.charAt(0).toUpperCase();
+                document.getElementById('navAvatar').innerText = initial;
+            }
+
+            const chatForm = document.getElementById('chatForm');
+            const chatInput = document.getElementById('chatInput');
+            const chatBody = document.getElementById('chatBody');
+
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const msg = chatInput.value.trim();
+                if(!msg) return;
+
+                // Add user msg
+                addMsg(msg, 'user');
+                chatInput.value = '';
+
+                // Simulate reply
+                setTimeout(() => {
+                    const replies = [
+                        "I understand. A human support agent will be reviewing this and will contact you shortly.",
+                        "Thanks for the details! Is there anything else you need assistance with?",
+                        "That's great! Let me check that for you.",
+                        "Your request has been logged in our system. You'll receive an email update soon."
+                    ];
+                    const randomReply = replies[Math.floor(Math.random() * replies.length)];
+                    addMsg(randomReply, 'support');
+                }, 1000 + Math.random() * 1000);
+            });
+
+            function addMsg(text, sender) {
+                const div = document.createElement('div');
+                div.className = `msg-bubble msg-${sender}`;
+                div.innerText = text;
+                chatBody.appendChild(div);
+                
+                // Scroll to bottom
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

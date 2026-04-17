@@ -212,12 +212,15 @@
                     </div>
                 </div>
 
-                <div class="upload-area" onclick="mockUpload()">
+                <label for="realUpload" class="upload-area" style="display: block;">
                     <span style="font-size: 2rem;">UPLOAD</span>
-                    <h3 style="margin-top: 10px;">Click or drag images here</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Upload primary images of the rooms and amenities</p>
-                    <div id="uploadStatus" style="color: #48bb78; font-weight: 600; margin-top: 10px; display: none;">SUCCESS Images Attached Simulator</div>
-                </div>
+                    <h3 style="margin-top: 10px;">Click to select an image</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Upload a primary image of the room</p>
+                    <input type="file" id="realUpload" accept="image/*" style="display: none;" onchange="handleImagePreview(this)">
+                    <div id="previewContainer" style="margin-top: 20px; display: none;">
+                        <img id="imagePreview" src="" style="max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: var(--shadow-soft); border: 2px solid var(--primary-light);">
+                    </div>
+                </label>
 
                 <button class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem;" onclick="submitProperty()">Publish Listing</button>
             </div>
@@ -247,8 +250,32 @@
             if(tabId === 'properties') renderOwnerListings();
         }
 
-        function mockUpload() {
-            document.getElementById('uploadStatus').style.display = 'block';
+        let uploadedImageData = null;
+
+        function handleImagePreview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Compress image to prevent localStorage quota from exceeding
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 600;
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        
+                        uploadedImageData = canvas.toDataURL('image/jpeg', 0.7); // 70% quality JPG
+                        document.getElementById('imagePreview').src = uploadedImageData;
+                        document.getElementById('previewContainer').style.display = 'block';
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
         function renderOwnerListings() {
@@ -271,7 +298,7 @@
                             <span style="font-weight: 600; color: var(--primary);">${formatCurrency(p.price)}/mo</span>
                             <span class="badge badge-verified" style="font-size: 0.7rem;">Active</span>
                         </div>
-                        <button class="btn btn-outline" style="width: 100%; margin-top: 16px; padding: 8px;">Edit Details</button>
+                        <button class="btn btn-outline" onclick="deleteProperty('${p.id}')" style="width: 100%; margin-top: 16px; padding: 8px; border-color: #e53e3e; color: #e53e3e;">Remove Listing</button>
                     </div>
                 </div>
             `).join('');
@@ -298,7 +325,7 @@
                 rating: 0,
                 reviews: 0,
                 amenities: ["WiFi"], // default
-                images: ["https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"], // generic fallback
+                images: [uploadedImageData || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"], // uses real image if uploaded
                 verified: false,
                 highDemand: false,
                 roomsLeft: 10,
@@ -315,7 +342,9 @@
             document.getElementById('addName').value = '';
             document.getElementById('addLoc').value = '';
             document.getElementById('addPrice').value = '';
-            document.getElementById('uploadStatus').style.display = 'none';
+            document.getElementById('realUpload').value = '';
+            document.getElementById('previewContainer').style.display = 'none';
+            uploadedImageData = null;
 
             // refresh count
             renderOwnerListings();
@@ -324,6 +353,17 @@
             setTimeout(() => {
                 switchTab('properties');
             }, 1000);
+        }
+
+        function deleteProperty(id) {
+            if(!confirm("Are you sure you want to permanently remove this property listing?")) return;
+            
+            let properties = getProperties();
+            properties = properties.filter(p => p.id !== id);
+            localStorage.setItem('1268_properties', JSON.stringify(properties));
+            
+            if (typeof showToast !== 'undefined') showToast("Property listing removed successfully.");
+            renderOwnerListings();
         }
 
         document.addEventListener('DOMContentLoaded', () => {

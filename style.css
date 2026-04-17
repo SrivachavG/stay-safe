@@ -21,6 +21,21 @@
     --transition: all 0.4s ease;
 }
 
+body.dark-theme {
+    --primary: #fdfcf9; 
+    --primary-light: #eaeaea;
+    --secondary: #cccccc; 
+    --accent: #ffffff; 
+    --bg-light: #121212;
+    --text-main: #fdfcf9;
+    --text-muted: #a0a0a0;
+    --white: #1a1a1a;
+    --card-bg: #1e1e1e;
+    
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
 * {
     margin: 0;
     padding: 0;

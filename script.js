@@ -324,8 +324,10 @@ const MOCK_PROPERTIES = [
     }
 ];
 
-// Force LocalStorage Update since we changed seed data
-localStorage.setItem('1268_properties', JSON.stringify(MOCK_PROPERTIES));
+// Only seed the database if it doesn't already exist to preserve properties added via Owner Hub
+if (!localStorage.getItem('1268_properties')) {
+    localStorage.setItem('1268_properties', JSON.stringify(MOCK_PROPERTIES));
+}
 
 // Initialize System Data (for other objects if not present)
 function initSystem() {
@@ -401,9 +403,78 @@ function getPropertyById(id) {
     return props.find(p => p.id === id);
 }
 
+function initAuthDisplay() {
+    const usersData = JSON.parse(localStorage.getItem('1268_users'));
+    if (usersData && usersData.current && usersData.current.name) {
+        const profileBtn = document.querySelector('.profile-btn');
+        if (profileBtn && !window.location.pathname.includes('login.html')) {
+            profileBtn.innerHTML = usersData.current.name.charAt(0).toUpperCase();
+            profileBtn.href = "dashboard.html";
+            profileBtn.title = "Go to Dashboard";
+        }
+    }
+}
+
+function initDarkMode() {
+    const isDark = localStorage.getItem('1268_theme') === 'dark';
+    if(isDark) document.body.classList.add('dark-theme');
+
+    const navLinks = document.querySelector('.nav-links');
+    if(navLinks) {
+        const toggleBtn = document.createElement('a');
+        toggleBtn.href = "#";
+        toggleBtn.innerText = isDark ? "☀️ LIGHT" : "🌙 DARK";
+        toggleBtn.className = "theme-toggle";
+        toggleBtn.style.cursor = "pointer";
+        toggleBtn.onclick = (e) => {
+            e.preventDefault();
+            const darkOn = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('1268_theme', darkOn ? 'dark' : 'light');
+            toggleBtn.innerText = darkOn ? "☀️ LIGHT" : "🌙 DARK";
+        };
+        // Insert before profile button
+        const profileBtn = navLinks.querySelector('.profile-btn');
+        if(profileBtn) {
+            navLinks.insertBefore(toggleBtn, profileBtn);
+        } else {
+            navLinks.appendChild(toggleBtn);
+        }
+    }
+}
+
+window.toggleSaveProperty = function(id, btnElement) {
+    let saved = JSON.parse(localStorage.getItem('1268_saved')) || [];
+    if(saved.includes(id)) {
+        saved = saved.filter(savedId => savedId !== id);
+        btnElement.innerHTML = '♡ Save';
+        showToast("Removed from wishlist.");
+    } else {
+        saved.push(id);
+        btnElement.innerHTML = '♥ Saved';
+        btnElement.style.color = '#e53e3e';
+        showToast("Added to wishlist!", "success");
+    }
+    localStorage.setItem('1268_saved', JSON.stringify(saved));
+};
+
+function initSaveButtons() {
+    // Sync UI with saved state on load
+    const saved = JSON.parse(localStorage.getItem('1268_saved')) || [];
+    document.querySelectorAll('.save-btn').forEach(btn => {
+        const id = btn.getAttribute('data-id');
+        if(saved.includes(id)) {
+            btn.innerHTML = '♥ Saved';
+            btn.style.color = '#e53e3e';
+        }
+    });
+}
+
 // Ensure init on script load
 document.addEventListener('DOMContentLoaded', () => {
     initSystem();
     setupNavbarVisibility();
+    initAuthDisplay();
+    initDarkMode();
+    initSaveButtons();
     console.log("STAY SAFE core loaded.");
 });
