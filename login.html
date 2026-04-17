@@ -3,231 +3,733 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Srivachav STAY SAFE | Login</title>
-    <meta name="description" content="Log in to your STAY SAFE account.">
+    <title>Stay Safe | Sign In</title>
+    <meta name="description" content="Sign in to Stay Safe — access bookings, roommate matches and your dashboard.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        .auth-container {
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: #f4f5f7;
+            color: #111827;
+        }
+
+        /* ─── Split Layout ─── */
+        .auth-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* ══════════════════════════════════
+           LEFT — Dark Illustration Panel
+        ══════════════════════════════════ */
+        .illus-panel {
+            background: #111111;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px 56px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Fine line texture */
+        .illus-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 38px,
+                rgba(255,255,255,0.022) 38px,
+                rgba(255,255,255,0.022) 39px
+            );
+            pointer-events: none;
+        }
+
+        .illus-brand {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .illus-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .illus-svg-wrap {
+            width: min(300px, 80%);
+            margin-bottom: 44px;
+            filter: drop-shadow(0 20px 48px rgba(0,0,0,0.5));
+        }
+
+        .illus-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.3;
+            margin-bottom: 14px;
+        }
+
+        .illus-headline em {
+            font-style: italic;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .illus-body {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.8;
+            max-width: 320px;
+        }
+
+        .illus-footer {
+            display: flex;
+            gap: 36px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .illus-stat strong {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .illus-stat span {
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+        }
+
+        /* ══════════════════════════════════
+           RIGHT — Form Panel
+        ══════════════════════════════════ */
+        .form-panel {
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: calc(100vh - 80px); /* Account for navbar */
-            padding: 40px 5%;
-            margin-top: 80px;
+            padding: 60px 48px;
+            overflow-y: auto;
         }
 
-        .auth-card {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: var(--white);
-            border: 1px solid #eaeaea;
+        .form-card {
             width: 100%;
-            max-width: 1000px;
-            overflow: hidden;
-            box-shadow: var(--shadow-hover);
+            max-width: 400px;
+            animation: fadeUp 0.4s ease both;
         }
 
-        .auth-form-side {
-            padding: 60px;
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Brand mark inside form */
+        .form-eyebrow {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .form-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .form-sub {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 28px;
+        }
+
+        /* ── Fields ── */
+        .field { margin-bottom: 16px; }
+
+        .field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .field-wrap { position: relative; }
+
+        .field input {
+            width: 100%;
+            padding: 11px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+            color: #111827;
+            background: #f9fafb;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .field input:focus {
+            border-color: #111827;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(17,24,39,0.07);
+        }
+
+        .field input::placeholder { color: #bbb; font-size: 0.85rem; }
+
+        .pw-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+            font-family: 'Poppins', sans-serif;
+            transition: color 0.15s;
+        }
+
+        .pw-toggle:hover { color: #111827; }
+
+        /* ── Meta row ── */
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.78rem;
+        }
+
+        .meta-row label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .meta-row input[type=checkbox] {
+            width: 14px; height: 14px;
+            accent-color: #111827;
+            cursor: pointer;
+        }
+
+        .meta-row a {
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .meta-row a:hover { color: #111827; }
+
+        /* ── Submit button ── */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #111827;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .btn-submit:hover {
+            background: #1f2937;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        }
+
+        .btn-submit:active  { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* ── OR Divider ── */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: #d1d5db;
+        }
+
+        .or-divider::before, .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        /* ── Social buttons ── */
+        .social-group {
             display: flex;
             flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
             justify-content: center;
-        }
-
-        .auth-image-side {
-            position: relative;
-            background: #f5f5f5;
-            border-left: 1px solid #eaeaea;
-            height: 100%;
-            min-height: 500px; /* For mobile */
-        }
-
-        .auth-image-side img {
+            gap: 10px;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(20%) contrast(1.1);
+            padding: 11px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.15s;
         }
 
-        .form-group {
+        .btn-social:hover {
+            background: #f9fafb;
+            border-color: #bbb;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+
+        .btn-social svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+        /* ── Role cards ── */
+        .role-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .role-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
             margin-bottom: 24px;
         }
 
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--primary);
+        .role-card {
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px 10px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            user-select: none;
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 1rem;
-            background: transparent;
-            transition: var(--transition);
+        .role-card .rc-title { font-size: 0.8rem; font-weight: 600; color: #111827; }
+        .role-card .rc-sub   { font-size: 0.7rem; color: #9ca3af; margin-top: 2px; }
+
+        .role-card:hover {
+            border-color: #111827;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
         }
 
-        .form-group input:focus {
-            border-color: var(--primary);
+        .role-card.active {
+            border-color: #111827;
+            background: #111827;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
         }
 
-        @media (max-width: 900px) {
-            .auth-card {
-                grid-template-columns: 1fr;
-            }
-            .auth-image-side {
-                min-height: 300px;
-                order: -1; /* Puts image above the form on small screens */
-            }
-            .auth-form-side {
-                padding: 40px 24px;
-            }
+        .role-card.active .rc-title { color: #fff; }
+        .role-card.active .rc-sub   { color: rgba(255,255,255,0.55); }
+
+        /* ── Switch line ── */
+        .switch-line {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .switch-line a {
+            color: #111827;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* ── Register pane ── */
+        #pane-up { display: none; }
+
+        /* ── Responsive ── */
+        @media (max-width: 860px) {
+            .auth-page { grid-template-columns: 1fr; }
+            .illus-panel { display: none; }
+            .form-panel { min-height: 100vh; padding: 48px 24px; }
+        }
+
+        @media (max-width: 480px) {
+            .role-group { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="index.html" class="nav-brand">STAY SAFE</a>
-        <div class="mobile-toggle">MENU</div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="listings.html">Explore</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="owner.html">Owner Hub</a>
-            <a href="login.html" class="profile-btn active" style="text-decoration: none;">LOGIN</a>
+
+<div class="auth-page">
+
+    <!-- ══════════════ LEFT — ILLUSTRATION ══════════════ -->
+    <div class="illus-panel">
+        <a href="index.html" class="illus-brand">Stay Safe</a>
+
+        <div class="illus-center">
+            <div class="illus-svg-wrap">
+                <svg viewBox="0 0 320 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ground line -->
+                    <line x1="20" y1="270" x2="300" y2="270" stroke="rgba(255,255,255,0.14)" stroke-width="1" stroke-dasharray="4 7"/>
+
+                    <!-- Background building — left -->
+                    <rect x="18" y="168" width="50" height="102" rx="1" stroke="rgba(255,255,255,0.18)" stroke-width="1" fill="rgba(255,255,255,0.03)"/>
+                    <rect x="25" y="178" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.08)"/>
+                    <rect x="42" y="178" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+                    <rect x="25" y="196" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+                    <rect x="42" y="196" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.1)"/>
+                    <rect x="25" y="214" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.1)"/>
+                    <rect x="42" y="214" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+                    <rect x="25" y="232" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.08)"/>
+                    <rect x="42" y="232" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+
+                    <!-- Background building — right -->
+                    <rect x="252" y="155" width="50" height="115" rx="1" stroke="rgba(255,255,255,0.18)" stroke-width="1" fill="rgba(255,255,255,0.03)"/>
+                    <rect x="259" y="165" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.1)"/>
+                    <rect x="276" y="165" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+                    <rect x="259" y="183" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+                    <rect x="276" y="183" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.1)"/>
+                    <rect x="259" y="201" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.1)"/>
+                    <rect x="276" y="201" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+                    <rect x="259" y="219" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.06)"/>
+                    <rect x="276" y="219" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.1)"/>
+                    <rect x="259" y="237" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.04)"/>
+                    <rect x="276" y="237" width="9" height="10" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="rgba(255,255,255,0.1)"/>
+
+                    <!-- Chimney -->
+                    <rect x="207" y="124" width="10" height="26" rx="1" stroke="rgba(255,255,255,0.55)" stroke-width="1.2" fill="rgba(255,255,255,0.07)"/>
+                    <!-- Smoke -->
+                    <circle cx="212" cy="116" r="5"  stroke="rgba(255,255,255,0.16)" stroke-width="1" fill="none"/>
+                    <circle cx="215" cy="108" r="4"  stroke="rgba(255,255,255,0.10)" stroke-width="1" fill="none"/>
+                    <circle cx="217" cy="101" r="3"  stroke="rgba(255,255,255,0.07)" stroke-width="1" fill="none"/>
+
+                    <!-- Roof -->
+                    <polyline points="72,162 160,95 248,162" stroke="white" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+                    <polygon points="72,162 160,95 248,162" fill="rgba(255,255,255,0.05)"/>
+
+                    <!-- House body -->
+                    <rect x="74" y="162" width="174" height="108" rx="1" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.04)"/>
+
+                    <!-- Door -->
+                    <rect x="143" y="218" width="34" height="52" rx="1" stroke="white" stroke-width="1.8" fill="rgba(255,255,255,0.1)"/>
+                    <path d="M143,218 Q160,204 177,218" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" fill="none"/>
+                    <circle cx="172" cy="244" r="2.5" fill="rgba(255,255,255,0.7)"/>
+
+                    <!-- Window left -->
+                    <rect x="88"  y="177" width="36" height="28" rx="1" stroke="rgba(255,255,255,0.65)" stroke-width="1.5" fill="rgba(255,255,255,0.1)"/>
+                    <line x1="106" y1="177" x2="106" y2="205" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+                    <line x1="88"  y1="191" x2="124" y2="191" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+
+                    <!-- Window right -->
+                    <rect x="196" y="177" width="36" height="28" rx="1" stroke="rgba(255,255,255,0.65)" stroke-width="1.5" fill="rgba(255,255,255,0.16)"/>
+                    <line x1="214" y1="177" x2="214" y2="205" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+                    <line x1="196" y1="191" x2="232" y2="191" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+
+                    <!-- Path to door -->
+                    <path d="M143,270 Q152,268 160,270 Q168,272 177,270" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" fill="none" stroke-dasharray="3 6"/>
+
+                    <!-- Tree left -->
+                    <line x1="48" y1="270" x2="48" y2="238" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="48" cy="226" r="15" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="rgba(255,255,255,0.04)"/>
+                    <circle cx="40" cy="234" r="9"  stroke="rgba(255,255,255,0.15)" stroke-width="1"   fill="rgba(255,255,255,0.03)"/>
+                    <circle cx="56" cy="234" r="9"  stroke="rgba(255,255,255,0.15)" stroke-width="1"   fill="rgba(255,255,255,0.03)"/>
+
+                    <!-- Tree right -->
+                    <line x1="272" y1="270" x2="272" y2="242" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="272" cy="230" r="13" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="rgba(255,255,255,0.04)"/>
+                    <circle cx="264" cy="238" r="8"  stroke="rgba(255,255,255,0.15)" stroke-width="1"   fill="rgba(255,255,255,0.03)"/>
+                    <circle cx="280" cy="238" r="8"  stroke="rgba(255,255,255,0.15)" stroke-width="1"   fill="rgba(255,255,255,0.03)"/>
+
+                    <!-- Location pin -->
+                    <line x1="160" y1="82" x2="160" y2="92" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="2 4"/>
+                    <path d="M160 40 C150 40 143 47.5 143 56.5 C143 68 160 83 160 83 C160 83 177 68 177 56.5 C177 47.5 170 40 160 40Z" fill="white" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                    <circle cx="160" cy="57" r="6" fill="#111111"/>
+
+                    <!-- Pulse rings -->
+                    <circle cx="160" cy="60" r="22" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1">
+                        <animate attributeName="r"       values="22;32;22" dur="3s"   repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.2;0;0.2" dur="3s"   repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="160" cy="60" r="16" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1">
+                        <animate attributeName="r"       values="16;24;16" dur="3s" begin="0.6s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.15;0;0.15" dur="3s" begin="0.6s" repeatCount="indefinite"/>
+                    </circle>
+
+                    <!-- Sparkles -->
+                    <circle cx="44"  cy="148" r="1.5" fill="rgba(255,255,255,0.3)"/>
+                    <circle cx="278" cy="136" r="1.5" fill="rgba(255,255,255,0.25)"/>
+                    <circle cx="130" cy="62"  r="1"   fill="rgba(255,255,255,0.4)"/>
+                    <circle cx="192" cy="68"  r="1"   fill="rgba(255,255,255,0.3)"/>
+                    <circle cx="76"  cy="92"  r="1"   fill="rgba(255,255,255,0.2)"/>
+                    <circle cx="248" cy="108" r="1"   fill="rgba(255,255,255,0.2)"/>
+                </svg>
+            </div>
+
+            <h2 class="illus-headline">A place to call <em>home.</em></h2>
+            <p class="illus-body">Verified PG accommodations and hostels — discovered safely, booked instantly.</p>
         </div>
-    </nav>
 
-    <!-- Login Section -->
-    <section class="auth-container">
-        <div class="auth-card animate-slide-up">
-            <div class="auth-form-side">
-                <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 12px;">Welcome Back.</h1>
-                <p class="hero-subtitle" style="margin-bottom: 40px; font-size: 1rem;">Enter your credentials to access your premium stays.</p>
-                
-                <form id="loginForm">
-                    <div class="form-group" style="margin-bottom: 30px;">
-                        <label style="margin-bottom: 12px;">I am a...</label>
-                        <div style="display: flex; gap: 16px;">
-                            <label style="flex: 1; border: 1px solid #ccc; padding: 12px; text-align: center; cursor: pointer; text-transform: none; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <input type="radio" name="accountType" value="user" checked style="width: auto; margin: 0; padding: 0;"> Guest
-                            </label>
-                            <label style="flex: 1; border: 1px solid #ccc; padding: 12px; text-align: center; cursor: pointer; text-transform: none; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <input type="radio" name="accountType" value="owner" style="width: auto; margin: 0; padding: 0;"> Property Owner
-                            </label>
+        <div class="illus-footer">
+            <div class="illus-stat">
+                <strong>2,400+</strong>
+                <span>Verified Stays</span>
+            </div>
+            <div class="illus-stat">
+                <strong>40+</strong>
+                <span>Cities</span>
+            </div>
+            <div class="illus-stat">
+                <strong>98%</strong>
+                <span>Trust Score</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════ RIGHT — FORM ══════════════ -->
+    <div class="form-panel">
+        <div class="form-card">
+
+            <p class="form-eyebrow">Stay Safe</p>
+            <h1 class="form-title" id="formTitle">Sign In</h1>
+            <p class="form-sub"    id="formSub">Access your bookings and dashboard.</p>
+
+            <!-- ═══ SIGN IN PANE ═══ -->
+            <div id="pane-in">
+                <form id="loginForm" autocomplete="on">
+                    <div class="field">
+                        <label for="lEmail">Email Address</label>
+                        <input type="email" id="lEmail" placeholder="you@example.com" required autocomplete="email">
+                    </div>
+                    <div class="field">
+                        <label for="lPw">Password</label>
+                        <div class="field-wrap">
+                            <input type="password" id="lPw" placeholder="Enter your password" required style="padding-right:56px" autocomplete="current-password">
+                            <button type="button" class="pw-toggle" onclick="togglePw('lPw',this)">SHOW</button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" required placeholder="you@example.com">
+                    <div class="meta-row">
+                        <label><input type="checkbox" id="remember"> Remember me</label>
+                        <a href="#">Forgot password?</a>
                     </div>
-                    <div class="form-group" style="position: relative;">
-                        <label for="password">Password</label>
-                        <div style="display: flex; position: relative;">
-                           <input type="password" id="password" required placeholder="••••••••" style="padding-right: 60px;">
-                           <button type="button" id="togglePassword" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--primary); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;">SHOW</button>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; font-size: 0.85rem;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" id="remember" style="width: auto; margin: 0;"> Remember me
-                        </label>
-                        <a href="#" style="color: var(--text-muted); text-decoration: underline;">Forgot Password?</a>
-                    </div>
-
-                    <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%;">Log In -></button>
+                    <button type="submit" id="loginBtn" class="btn-submit">Sign In</button>
                 </form>
-                
-                <div style="margin-top: 32px; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
-                    Don't have an account? <a href="#" style="color: var(--primary); font-weight: 500; text-decoration: underline;">Sign up</a>
+
+                <div class="or-divider">OR</div>
+
+                <div class="social-group">
+                    <button class="btn-social" onclick="sso('Google')">
+                        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Continue with Google
+                    </button>
+                    <button class="btn-social" onclick="sso('Apple')">
+                        <svg viewBox="0 0 24 24"><path fill="#111" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                        Continue with Apple
+                    </button>
                 </div>
-            </div>
-            <div class="auth-image-side">
-                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1000&q=80" alt="Luxury interior">
-                <div style="position: absolute; bottom: 0; left: 0; background: white; padding: 20px; border-top: 1px solid #eaeaea; border-right: 1px solid #eaeaea;">
-                    <p style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 5px;">ESTATE 24</p>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.1em;">LUXURY LIVING</p>
+
+                <p class="role-label">Select your role</p>
+                <div class="role-group">
+                    <div class="role-card active" id="chip-user"  onclick="pickRole('user')">
+                        <div class="rc-title">Guest / Tenant</div>
+                        <div class="rc-sub">Find PG &amp; Hostels</div>
+                    </div>
+                    <div class="role-card" id="chip-owner" onclick="pickRole('owner')">
+                        <div class="rc-title">Property Owner</div>
+                        <div class="rc-sub">Manage listings</div>
+                    </div>
                 </div>
+
+                <p class="switch-line">Don't have an account? <a onclick="switchPane('up')">Register</a></p>
             </div>
+
+            <!-- ═══ REGISTER PANE ═══ -->
+            <div id="pane-up">
+                <p class="role-label">Registering as</p>
+                <div class="role-group" style="margin-bottom:18px;">
+                    <div class="role-card active" id="schip-user"  onclick="pickSRole('user')">
+                        <div class="rc-title">Guest / Tenant</div>
+                        <div class="rc-sub">Find PG &amp; Hostels</div>
+                    </div>
+                    <div class="role-card" id="schip-owner" onclick="pickSRole('owner')">
+                        <div class="rc-title">Property Owner</div>
+                        <div class="rc-sub">Manage listings</div>
+                    </div>
+                </div>
+
+                <form id="signupForm" autocomplete="on">
+                    <div class="field">
+                        <label for="sName">Full Name</label>
+                        <input type="text" id="sName" placeholder="Rahul Sharma" required autocomplete="name">
+                    </div>
+                    <div class="field">
+                        <label for="sEmail">Email Address</label>
+                        <input type="email" id="sEmail" placeholder="you@example.com" required autocomplete="email">
+                    </div>
+                    <div class="field">
+                        <label for="sPhone">Phone <span style="font-weight:400;color:#aaa;font-size:0.7rem;">(optional)</span></label>
+                        <input type="tel" id="sPhone" placeholder="+91 98765 43210" autocomplete="tel">
+                    </div>
+                    <div class="field">
+                        <label for="sPw">Password</label>
+                        <div class="field-wrap">
+                            <input type="password" id="sPw" placeholder="Min. 8 characters" required style="padding-right:56px" autocomplete="new-password">
+                            <button type="button" class="pw-toggle" onclick="togglePw('sPw',this)">SHOW</button>
+                        </div>
+                    </div>
+                    <button type="submit" id="signupBtn" class="btn-submit">Create Account</button>
+                </form>
+
+                <div class="or-divider" style="margin:18px 0;">OR</div>
+                <div class="social-group">
+                    <button class="btn-social" onclick="sso('Google')">
+                        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Continue with Google
+                    </button>
+                    <button class="btn-social" onclick="sso('Apple')">
+                        <svg viewBox="0 0 24 24"><path fill="#111" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                        Continue with Apple
+                    </button>
+                </div>
+
+                <p class="switch-line">Already registered? <a onclick="switchPane('in')">Sign in</a></p>
+            </div>
+
         </div>
-    </section>
+    </div>
 
-    <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const mobileToggle = document.querySelector('.mobile-toggle');
-            const navLinks = document.querySelector('.nav-links');
-            if (mobileToggle) {
-                mobileToggle.addEventListener('click', () => {
-                    navLinks.classList.toggle('active');
-                });
-            }
+</div>
 
-            // Login Features
-            const loginForm = document.getElementById('loginForm');
-            const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('password');
-            const loginBtn = document.getElementById('loginBtn');
+<script>
+    function toast(msg, type) {
+        const t = document.createElement('div');
+        t.style.cssText = `position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:${type==='error'?'#ef4444':'#111827'};color:#fff;padding:12px 22px;border-radius:8px;font-size:0.82rem;font-weight:500;font-family:'Poppins',sans-serif;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.15);white-space:nowrap;`;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
 
-            if (togglePassword) {
-                togglePassword.addEventListener('click', function() {
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    this.textContent = type === 'password' ? 'SHOW' : 'HIDE';
-                });
-            }
+    let role = 'user', signupRole = 'user';
 
-            if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById('email').value;
-                    const password = document.getElementById('password').value;
-                    const remember = document.getElementById('remember').checked;
-                    
-                    const accountTypeElement = document.querySelector('input[name="accountType"]:checked');
-                    const accountType = accountTypeElement ? accountTypeElement.value : 'user';
+    function switchPane(p) {
+        document.getElementById('pane-in').style.display = p === 'in' ? '' : 'none';
+        document.getElementById('pane-up').style.display = p === 'up' ? '' : 'none';
+        document.getElementById('formTitle').textContent = p === 'in' ? 'Sign In' : 'Create Account';
+        document.getElementById('formSub').textContent   = p === 'in' ? 'Access your bookings and dashboard.' : 'Join Stay Safe — it\'s free.';
+    }
 
-                    if(!email || !password) {
-                        if (typeof showToast === 'function') showToast('Please fill all fields', 'error');
-                        return;
-                    }
+    function pickRole(r) {
+        role = r;
+        document.getElementById('chip-user').classList.toggle('active',  r === 'user');
+        document.getElementById('chip-owner').classList.toggle('active', r === 'owner');
+    }
 
-                    // Simulate loading
-                    const originalText = loginBtn.innerHTML;
-                    loginBtn.innerHTML = 'Authenticating...';
-                    loginBtn.disabled = true;
+    function pickSRole(r) {
+        signupRole = r;
+        document.getElementById('schip-user').classList.toggle('active',  r === 'user');
+        document.getElementById('schip-owner').classList.toggle('active', r === 'owner');
+    }
 
-                    setTimeout(() => {
-                        // Extract name from email and update user in local storage
-                        const userName = email.split('@')[0];
-                        const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
-                        
-                        const usersData = JSON.parse(localStorage.getItem('1268_users')) || {};
-                        usersData.current = { name: formattedName, role: accountType, email: email };
-                        localStorage.setItem('1268_users', JSON.stringify(usersData));
-                        
-                        if (remember) {
-                            localStorage.setItem('1268_remember', 'true');
-                        }
+    function togglePw(id, btn) {
+        const el = document.getElementById(id);
+        const hidden = el.type === 'password';
+        el.type = hidden ? 'text' : 'password';
+        btn.textContent = hidden ? 'HIDE' : 'SHOW';
+    }
 
-                        if (typeof showToast === 'function') showToast(`Login successful! Redirecting to ${accountType === 'owner' ? 'Owner Hub' : 'Dashboard'}...`, 'success');
-                        
-                        setTimeout(() => {
-                            window.location.href = accountType === 'owner' ? 'owner.html' : 'dashboard.html';
-                        }, 1500);
-                    }, 1000);
-                });
-            }
-        });
-    </script>
+    function sso(p) { toast(p + ' SSO is not configured — use email login.', 'error'); }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('lEmail').value.trim();
+        const pw    = document.getElementById('lPw').value;
+        const remem = document.getElementById('remember').checked;
+        const btn   = document.getElementById('loginBtn');
+        if (!email || !pw) { toast('Please fill all fields.', 'error'); return; }
+        btn.textContent = 'Signing in…'; btn.disabled = true;
+        setTimeout(() => {
+            const raw  = email.split('@')[0];
+            const name = raw.charAt(0).toUpperCase() + raw.slice(1);
+            const ud   = JSON.parse(localStorage.getItem('1268_users') || '{}');
+            ud.current = { name, role, email };
+            localStorage.setItem('1268_users', JSON.stringify(ud));
+            if (remem) localStorage.setItem('1268_remember', 'true');
+            toast('Welcome, ' + name + '!');
+            setTimeout(() => { window.location.href = role === 'owner' ? 'owner.html' : 'dashboard.html'; }, 1100);
+        }, 900);
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name  = document.getElementById('sName').value.trim();
+        const email = document.getElementById('sEmail').value.trim();
+        const pw    = document.getElementById('sPw').value;
+        const btn   = document.getElementById('signupBtn');
+        if (!name || !email || !pw) { toast('Please fill required fields.', 'error'); return; }
+        if (pw.length < 8)          { toast('Password must be at least 8 characters.', 'error'); return; }
+        btn.textContent = 'Creating…'; btn.disabled = true;
+        setTimeout(() => {
+            const ud = JSON.parse(localStorage.getItem('1268_users') || '{}');
+            ud.current = { name, role: signupRole, email };
+            localStorage.setItem('1268_users', JSON.stringify(ud));
+            toast('Welcome, ' + name + '! Account created.');
+            setTimeout(() => { window.location.href = signupRole === 'owner' ? 'owner.html' : 'dashboard.html'; }, 1100);
+        }, 900);
+    });
+</script>
 </body>
 </html>

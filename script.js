@@ -423,14 +423,14 @@ function initDarkMode() {
     if(navLinks) {
         const toggleBtn = document.createElement('a');
         toggleBtn.href = "#";
-        toggleBtn.innerText = isDark ? "☀️ LIGHT" : "🌙 DARK";
+        toggleBtn.innerText = isDark ? "LIGHT" : "DARK";
         toggleBtn.className = "theme-toggle";
         toggleBtn.style.cursor = "pointer";
         toggleBtn.onclick = (e) => {
             e.preventDefault();
             const darkOn = document.body.classList.toggle('dark-theme');
             localStorage.setItem('1268_theme', darkOn ? 'dark' : 'light');
-            toggleBtn.innerText = darkOn ? "☀️ LIGHT" : "🌙 DARK";
+            toggleBtn.innerText = darkOn ? "LIGHT" : "DARK";
         };
         // Insert before profile button
         const profileBtn = navLinks.querySelector('.profile-btn');

@@ -116,6 +116,9 @@
                 <a href="transactions.html">Transactions & Rent</a>
                 <a href="matches.html" class="active">Roommate Matches</a>
                 <a href="support.html">Support Chat</a>
+                <a href="settings.html">Settings</a>
+                <div style="height:1px;background:rgba(0,0,0,0.08);margin:8px 0;"></div>
+                <div style="color:#e53e3e;cursor:pointer;padding:12px 16px;border-radius:4px;font-size:0.92rem;font-weight:500;" onclick="logoutUser()">Logout</div>
             </aside>
 
             <main>
@@ -138,44 +141,48 @@
         const roles = ['Software Engineer', 'Design Student', 'Marketing Lead', 'Architecture Student', 'Musician', 'Business Analyst', 'Freelancer', 'Medical Student', 'Photographer', 'Lawyer', 'Chef', 'Teacher', 'Nurse', 'Writer', 'Data Scientist'];
         const tagPool = ['Night Owl', 'Non-Smoker', 'Pet Lover', 'Early Bird', 'Clean-Freak', 'Vegan', 'Fitness Enthusiast', 'Bookworm', 'Coffee Addict', 'Gamer', 'Foodie', 'Quiet', 'Extrovert', 'Minimalist', 'Traveler', 'Artist', 'Musician', 'Techie'];
 
-        const matches = [];
-        
-        // Base Premium Profiles
-        matches.push({ id: 'm1', name: 'Alex Johnson', age: 24, percent: 98, role: 'Software Engineer', tags: ['Night Owl', 'Non-Smoker', 'Pet Lover'], img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80' });
-        matches.push({ id: 'm2', name: 'Sarah Lee', age: 22, percent: 97, role: 'Design Student', tags: ['Early Bird', 'Clean-Freak', 'Vegan'], img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80' });
-        matches.push({ id: 'm3', name: 'Rohan Sharma', age: 26, percent: 96, role: 'Marketing Lead', tags: ['Fitness Enthusiast', 'Non-Smoker'], img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80' });
-        matches.push({ id: 'm4', name: 'Priya Patel', age: 23, percent: 95, role: 'Architecture Student', tags: ['Quiet', 'Bookworm', 'Coffee Addict'], img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80' });
-
-        // Generate 36 more dynamic profiles to reach 40
-        for(let i = 5; i <= 40; i++) {
-            const fn = names[Math.floor(Math.random() * names.length)];
-            const ln = surnames[Math.floor(Math.random() * surnames.length)];
-            const role = roles[Math.floor(Math.random() * roles.length)];
-            
-            const numTags = 2 + Math.floor(Math.random() * 2);
-            const tags = [];
-            while(tags.length < numTags) {
-                let tag = tagPool[Math.floor(Math.random() * tagPool.length)];
-                if(!tags.includes(tag)) tags.push(tag);
-            }
-            
-            const age = 20 + Math.floor(Math.random() * 10);
-            const percent = 70 + Math.floor(Math.random() * 24); // generates 70-94% so base profiles stay at top
-            
-            const gender = Math.random() > 0.5 ? 'men' : 'women';
-            const portraitId = Math.floor(Math.random() * 90) + 1;
-            
-            matches.push({
-                id: 'm' + i,
-                name: fn + ' ' + ln,
-                age: age,
-                percent: percent,
-                role: role,
-                tags: tags,
-                // Highly stable avatar CDN fallback
-                img: \`https://randomuser.me/api/portraits/\${gender}/\${portraitId}.jpg\`
-            });
-        }
+        const matches = [
+            { id: 'm1',  name: 'Alex Johnson',    age: 24, percent: 98, role: 'Software Engineer',       tags: ['Night Owl', 'Non-Smoker', 'Pet Lover'],       img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80' },
+            { id: 'm2',  name: 'Sarah Lee',        age: 22, percent: 97, role: 'Design Student',          tags: ['Early Bird', 'Clean-Freak', 'Vegan'],          img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
+            { id: 'm3',  name: 'Rohan Sharma',     age: 26, percent: 96, role: 'Marketing Lead',          tags: ['Fitness Enthusiast', 'Non-Smoker'],             img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80' },
+            { id: 'm4',  name: 'Priya Patel',      age: 23, percent: 95, role: 'Architecture Student',    tags: ['Quiet', 'Bookworm', 'Coffee Addict'],           img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80' },
+            { id: 'm5',  name: 'Arjun Verma',      age: 25, percent: 94, role: 'Data Scientist',          tags: ['Techie', 'Non-Smoker', 'Gamer'],                img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80' },
+            { id: 'm6',  name: 'Ananya Singh',     age: 22, percent: 93, role: 'Medical Student',         tags: ['Early Bird', 'Clean-Freak', 'Quiet'],          img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80' },
+            { id: 'm7',  name: 'David Chen',       age: 27, percent: 92, role: 'Business Analyst',        tags: ['Coffee Addict', 'Minimalist', 'Non-Smoker'],   img: 'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?w=400&q=80' },
+            { id: 'm8',  name: 'Kavya Reddy',      age: 21, percent: 91, role: 'Journalism Student',      tags: ['Extrovert', 'Traveler', 'Foodie'],              img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80' },
+            { id: 'm9',  name: 'Ethan Davis',      age: 24, percent: 90, role: 'Freelancer',              tags: ['Night Owl', 'Artist', 'Gamer'],                 img: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&q=80' },
+            { id: 'm10', name: 'Meera Nair',       age: 23, percent: 89, role: 'Yoga Instructor',         tags: ['Vegan', 'Early Bird', 'Minimalist'],            img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80' },
+            { id: 'm11', name: 'Karan Mehta',      age: 26, percent: 88, role: 'Civil Engineer',          tags: ['Fitness Enthusiast', 'Non-Smoker', 'Quiet'],   img: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&q=80' },
+            { id: 'm12', name: 'Emma Wilson',      age: 22, percent: 87, role: 'Literature Student',      tags: ['Bookworm', 'Coffee Addict', 'Introvert'],      img: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&q=80' },
+            { id: 'm13', name: 'Vikram Iyer',      age: 28, percent: 86, role: 'Lawyer',                  tags: ['Minimalist', 'Non-Smoker', 'Chess Player'],    img: 'https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?w=400&q=80' },
+            { id: 'm14', name: 'Nisha Kapoor',     age: 24, percent: 85, role: 'Graphic Designer',        tags: ['Artist', 'Night Owl', 'Coffee Addict'],        img: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80' },
+            { id: 'm15', name: 'James Park',       age: 25, percent: 85, role: 'Photographer',            tags: ['Traveler', 'Early Bird', 'Minimalist'],        img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80' },
+            { id: 'm16', name: 'Divya Menon',      age: 22, percent: 84, role: 'MBA Student',             tags: ['Extrovert', 'Foodie', 'Non-Smoker'],           img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80' },
+            { id: 'm17', name: 'Liam Walker',      age: 23, percent: 83, role: 'Musician',                tags: ['Night Owl', 'Artist', 'Non-Smoker'],           img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80' },
+            { id: 'm18', name: 'Shreya Joshi',     age: 21, percent: 82, role: 'Fashion Student',         tags: ['Extrovert', 'Foodie', 'Traveler'],             img: 'https://images.unsplash.com/photo-1514315384763-ba401779410f?w=400&q=80' },
+            { id: 'm19', name: 'Noah Martinez',    age: 26, percent: 81, role: 'Chef',                    tags: ['Foodie', 'Early Bird', 'Clean-Freak'],         img: 'https://images.unsplash.com/photo-1521119989659-a83eebb48578?w=400&q=80' },
+            { id: 'm20', name: 'Isha Malhotra',    age: 23, percent: 80, role: 'Nurse',                   tags: ['Quiet', 'Non-Smoker', 'Pet Lover'],            img: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=80' },
+            { id: 'm21', name: 'Lucas Green',      age: 24, percent: 79, role: 'Environmental Scientist', tags: ['Vegan', 'Minimalist', 'Traveler'],             img: 'https://images.unsplash.com/photo-1542178243-bc20204b769f?w=400&q=80' },
+            { id: 'm22', name: 'Pooja Gupta',      age: 22, percent: 78, role: 'Software Tester',         tags: ['Gamer', 'Night Owl', 'Coffee Addict'],         img: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400&q=80' },
+            { id: 'm23', name: 'Aiden Brown',      age: 25, percent: 77, role: 'Teacher',                 tags: ['Early Bird', 'Bookworm', 'Non-Smoker'],        img: 'https://images.unsplash.com/photo-1531561083450-d10a7b4e6adf?w=400&q=80' },
+            { id: 'm24', name: 'Tanvi Shah',       age: 24, percent: 76, role: 'Interior Designer',       tags: ['Artist', 'Clean-Freak', 'Minimalist'],         img: 'https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=400&q=80' },
+            { id: 'm25', name: 'Oliver Taylor',    age: 23, percent: 75, role: 'Finance Analyst',         tags: ['Non-Smoker', 'Fitness Enthusiast', 'Quiet'],   img: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400&q=80' },
+            { id: 'm26', name: 'Riya Choudhary',   age: 21, percent: 74, role: 'Psychology Student',      tags: ['Extrovert', 'Pet Lover', 'Coffee Addict'],     img: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=400&q=80' },
+            { id: 'm27', name: 'Mason Harris',     age: 27, percent: 73, role: 'Network Engineer',        tags: ['Night Owl', 'Gamer', 'Techie'],                img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80' },
+            { id: 'm28', name: 'Sneha Pillai',     age: 23, percent: 73, role: 'Chartered Accountant',    tags: ['Early Bird', 'Clean-Freak', 'Minimalist'],     img: 'https://images.unsplash.com/photo-1459499362902-55a20553e082?w=400&q=80' },
+            { id: 'm29', name: 'Jacob Moore',      age: 26, percent: 72, role: 'Mechanical Engineer',     tags: ['Fitness Enthusiast', 'Non-Smoker', 'Traveler'],img: 'https://images.unsplash.com/photo-1488161628813-04466f872be2?w=400&q=80' },
+            { id: 'm30', name: 'Anjali Rao',       age: 22, percent: 72, role: 'BBA Student',             tags: ['Extrovert', 'Foodie', 'Artist'],               img: 'https://images.unsplash.com/photo-1533116216-31b4e26f2f68?w=400&q=80' },
+            { id: 'm31', name: 'William Clark',    age: 24, percent: 71, role: 'UX Researcher',           tags: ['Quiet', 'Bookworm', 'Coffee Addict'],           img: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&q=80' },
+            { id: 'm32', name: 'Mansi Trivedi',    age: 23, percent: 71, role: 'MBBS Student',            tags: ['Early Bird', 'Non-Smoker', 'Quiet'],           img: 'https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?w=400&q=80' },
+            { id: 'm33', name: 'Benjamin King',    age: 25, percent: 70, role: 'Content Writer',          tags: ['Bookworm', 'Night Owl', 'Coffee Addict'],      img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80' },
+            { id: 'm34', name: 'Simran Khatri',    age: 21, percent: 70, role: 'Commerce Student',        tags: ['Extrovert', 'Traveler', 'Fitness Enthusiast'], img: 'https://images.unsplash.com/photo-1515077678510-ce3bdf418862?w=400&q=80' },
+            { id: 'm35', name: 'Henry Scott',      age: 28, percent: 69, role: 'PhD Researcher',          tags: ['Minimalist', 'Non-Smoker', 'Introvert'],       img: 'https://images.unsplash.com/photo-1537511446984-935f663eb1f4?w=400&q=80' },
+            { id: 'm36', name: 'Rupal Desai',      age: 24, percent: 68, role: 'HR Manager',              tags: ['Extrovert', 'Clean-Freak', 'Foodie'],          img: 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400&q=80' },
+            { id: 'm37', name: 'Jack Adams',       age: 23, percent: 67, role: 'Marketing Intern',        tags: ['Night Owl', 'Gamer', 'Non-Smoker'],            img: 'https://images.unsplash.com/photo-1530268729831-4b0b9e170218?w=400&q=80' },
+            { id: 'm38', name: 'Kritika Bose',     age: 22, percent: 67, role: 'Dance Teacher',           tags: ['Fitness Enthusiast', 'Early Bird', 'Vegan'],   img: 'https://images.unsplash.com/photo-1513097633097-329a3a64e0d4?w=400&q=80' },
+            { id: 'm39', name: 'Sebastian Young',  age: 26, percent: 66, role: 'Sales Executive',         tags: ['Extrovert', 'Coffee Addict', 'Traveler'],      img: 'https://images.unsplash.com/photo-1521119989659-a83eebb48578?w=400&q=80' },
+            { id: 'm40', name: 'Pooja Nayak',      age: 23, percent: 65, role: 'B.Sc Nursing',            tags: ['Quiet', 'Non-Smoker', 'Pet Lover'],            img: 'https://images.unsplash.com/photo-1530785602389-07594beb8b73?w=400&q=80' },
+        ];
         
         matches.sort((a, b) => b.percent - a.percent);
 
