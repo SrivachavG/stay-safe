@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srivachav STAY SAFE | Explore</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .listings-layout {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .filters-sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        .filter-group {
+            margin-bottom: 24px;
+        }
+        .filter-group h4 {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .results-area {
+            flex: 1;
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin-top: 10px;
+            accent-color: var(--primary);
+        }
+        @media (max-width: 900px) {
+            .listings-layout {
+                flex-direction: column;
+            }
+            .filters-sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">STAY SAFE</a>
+        <div class="mobile-toggle">MENU</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="listings.html" class="active">Explore</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="owner.html">Owner Hub</a>
+            <div class="profile-btn" onclick="window.location.href='dashboard.html'">A</div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section>
+        <div class="container animate-slide-up">
+            <div class="results-header">
+                <h2>Explore Properties</h2>
+                <span id="resultCount" style="color: var(--text-muted);">Loading...</span>
+            </div>
+
+            <div class="listings-layout">
+                <!-- Sidebar -->
+                <aside class="filters-sidebar glass-panel">
+                    <div class="filter-group">
+                        <h4>Search Location</h4>
+                        <div class="search-inputs" style="margin-bottom: 0;">
+                            <input type="text" id="filterLoc" placeholder="City or locality...">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h4>Category</h4>
+                        <label><input type="radio" name="cat" value="All" checked> All</label>
+                        <label><input type="radio" name="cat" value="Co-living"> Co-living</label>
+                        <label><input type="radio" name="cat" value="Boys PG"> Boys PG</label>
+                        <label><input type="radio" name="cat" value="Girls PG"> Girls PG</label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Max Price: <span id="priceVal">₹20,000</span></h4>
+                        <input type="range" id="priceRange" min="3000" max="25000" step="500" value="20000">
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Amenities</h4>
+                        <label><input type="checkbox" value="AC" class="amenity-cb"> AC</label>
+                        <label><input type="checkbox" value="WiFi" class="amenity-cb"> WiFi</label>
+                        <label><input type="checkbox" value="Food" class="amenity-cb"> Food Info</label>
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%;" onclick="applyFilters()">Apply Filters</button>
+                </aside>
+
+                <!-- Results -->
+                <div class="results-area">
+                    <div class="property-grid" id="listingsGrid">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            const category = urlParams.get('category');
+            
+            if(query) document.getElementById('filterLoc').value = query;
+            if(category) {
+                const radios = document.querySelectorAll('input[name="cat"]');
+                radios.forEach(r => {
+                    if (r.value === category) r.checked = true;
+                });
+            }
+
+            // Sync price slider text
+            document.getElementById('priceRange').addEventListener('input', function() {
+                document.getElementById('priceVal').innerText = formatCurrency(this.value);
+            });
+
+            applyFilters();
+        });
+
+        function renderCards(properties) {
+            const container = document.getElementById('listingsGrid');
+            const count = document.getElementById('resultCount');
+            
+            if(properties.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No properties found matching your criteria. Try adjusting filters.</div>';
+                count.innerText = "0 results";
+                return;
+            }
+
+            count.innerText = `${properties.length} results`;
+            
+            container.innerHTML = properties.map(p => `
+                <div class="property-card glass-panel" style="animation: fadeIn 0.4s ease-out">
+                    <div class="card-img">
+                        <img src="${p.images[0]}" alt="${p.name}">
+                        ${p.highDemand ? '<div class="badge badge-demand pos-top-right">High Demand</div>' : ''}
+                        ${!p.highDemand && p.verified ? '<div class="badge badge-verified pos-top-right">✓ Verified</div>' : ''}
+                    </div>
+                    <div class="card-content">
+                        <div class="d-flex justify-between aligns-center">
+                            <h3>${p.name}</h3>
+                            <span class="rating">RATING  ${p.rating}</span>
+                        </div>
+                        <p class="location-text"> ${p.location}</p>
+                        <div class="amenities-row">
+                            ${p.amenities.slice(0, 3).map(a => `<span class="badge">${a}</span>`).join('')}
+                        </div>
+                        <div class="card-footer d-flex justify-between aligns-center">
+                            <div class="price">
+                                <strong>${formatCurrency(p.price)}</strong> / mo
+                            </div>
+                            <a href="details.html?id=${p.id}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.9rem;">Details</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters() {
+            let properties = getProperties();
+            
+            const loc = document.getElementById('filterLoc').value.toLowerCase();
+            const cat = document.querySelector('input[name="cat"]:checked').value;
+            const maxPrice = parseInt(document.getElementById('priceRange').value);
+            
+            const checkedAmenities = Array.from(document.querySelectorAll('.amenity-cb:checked')).map(cb => cb.value);
+
+            const filtered = properties.filter(p => {
+                let match = true;
+                if(loc && !p.location.toLowerCase().includes(loc)) match = false;
+                if(cat !== 'All' && !p.type.includes(cat)) match = false;
+                if(p.price > maxPrice) match = false;
+                
+                if(checkedAmenities.length > 0) {
+                    const hasAllAms = checkedAmenities.every(a => p.amenities.includes(a));
+                    if(!hasAllAms) match = false;
+                }
+                return match;
+            });
+
+            renderCards(filtered);
+        }
+    </script>
+</body>
+</html>

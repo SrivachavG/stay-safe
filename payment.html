@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srivachav STAY SAFE | Payment Gateway</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .payment-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 40px;
+            margin-top: 100px;
+        }
+
+        .gateway-box {
+            padding: 30px;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .method-btn {
+            flex: 1;
+            padding: 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .method-btn.active {
+            border-color: var(--primary);
+            background: rgba(107, 70, 193, 0.05);
+            color: var(--primary);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .summary-box {
+            padding: 30px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            height: fit-content;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+
+        /* Success Overlay */
+        .success-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .check-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: #48bb78;
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 24px;
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 900px) {
+            .payment-layout { grid-template-columns: 1fr; }
+            .payment-methods { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">STAY SAFE</a>
+    </nav>
+
+    <div class="container animate-slide-up">
+        <div class="payment-layout">
+            <div class="gateway-box glass-panel">
+                <h2 style="margin-bottom: 24px;">Secure Payment</h2>
+                
+                <div class="payment-methods">
+                    <button class="method-btn active" onclick="switchMethod('upi')">UPI</button>
+                    <button class="method-btn" onclick="switchMethod('card')">Credit/Debit Card</button>
+                    <button class="method-btn" onclick="switchMethod('wallet')">Wallet</button>
+                </div>
+
+                <div id="method-upi" class="payment-form">
+                    <div class="input-group">
+                        <label>Enter UPI ID</label>
+                        <input type="text" id="upiId" placeholder="username@upi">
+                    </div>
+                </div>
+
+                <div id="method-card" class="payment-form" style="display: none;">
+                    <div class="input-group">
+                        <label>Card Number</label>
+                        <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <div class="input-group" style="flex: 1;">
+                            <label>Expiry</label>
+                            <input type="text" placeholder="MM/YY">
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <label>CVV</label>
+                            <input type="password" placeholder="***" maxlength="3">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Name on Card</label>
+                        <input type="text" placeholder="John Doe">
+                    </div>
+                </div>
+
+                <div id="method-wallet" class="payment-form" style="display: none;">
+                    <div class="input-group">
+                        <label>Mobile Number linked to Wallet</label>
+                        <input type="text" placeholder="+91 XXXXX XXXXX">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; margin-top: 24px; padding: 18px; font-size: 1.1rem;" onclick="processPayment()" id="payBtn">
+                    Pay Now
+                </button>
+            </div>
+
+            <div class="summary-box glass-panel">
+                <h3 style="margin-bottom: 24px;">Booking Summary</h3>
+                <div id="summaryContent">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="check-circle">✓</div>
+        <h1 style="font-size: 2.5rem; margin-bottom: 16px;">Payment Successful!</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 32px;" id="successMsg">Your booking has been confirmed.</p>
+        
+        <div style="display: flex; gap: 16px;">
+            <button class="btn btn-outline" onclick="window.location.href='transactions.html'">View Receipt</button>
+            <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">Go to Dashboard</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let intent = null;
+        let property = null;
+        let activeMethod = 'upi';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const stored = localStorage.getItem('1268_intent');
+            if(!stored) {
+                alert("No checkout intent found.");
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            intent = JSON.parse(stored);
+            property = getPropertyById(intent.propertyId);
+
+            const total = property.price * 3; // Rent + 2 months deposit
+
+            document.getElementById('summaryContent').innerHTML = `
+                <div class="summary-row" style="color: var(--text-main); font-weight: 600;">
+                    <span>${property.name}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Move-in Date</span>
+                    <span>${intent.date}</span>
+                </div>
+                <hr style="margin: 16px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">
+                <div class="summary-row">
+                    <span>First Month Rent</span>
+                    <span>${formatCurrency(property.price)}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Security Deposit (Refundable)</span>
+                    <span>${formatCurrency(property.price * 2)}</span>
+                </div>
+                <hr style="margin: 16px 0; border: none; border-top: 1px dashed rgba(0,0,0,0.2);">
+                <div class="summary-row" style="color: var(--text-main); font-size: 1.2rem; font-weight: 700;">
+                    <span>Total Amount</span>
+                    <span id="displayTotal">${formatCurrency(total)}</span>
+                </div>
+            `;
+
+            document.getElementById('payBtn').innerText = `Pay ${formatCurrency(total)}`;
+        });
+
+        function switchMethod(method) {
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.method-btn[onclick="switchMethod('${method}')"]`).classList.add('active');
+
+            document.querySelectorAll('.payment-form').forEach(f => f.style.display = 'none');
+            document.getElementById(`method-${method}`).style.display = 'block';
+            activeMethod = method;
+        }
+
+        function processPayment() {
+            // Very simple validation simulation
+            if(activeMethod === 'upi' && !document.getElementById('upiId').value) {
+                showToast("Please enter a valid UPI ID", "error");
+                return;
+            }
+
+            const btn = document.getElementById('payBtn');
+            btn.innerHTML = 'Processing...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Generate Transaction
+                const transactions = JSON.parse(localStorage.getItem('1268_transactions')) || [];
+                const total = property.price * 3;
+                
+                const tx = {
+                    id: 'TXN' + Math.floor(Math.random() * 900000 + 100000),
+                    propertyId: property.id,
+                    propertyName: property.name,
+                    amount: total,
+                    date: new Date().toISOString(),
+                    status: 'SUCCESS',
+                    method: activeMethod.toUpperCase()
+                };
+
+                transactions.unshift(tx); // push to top
+                localStorage.setItem('1268_transactions', JSON.stringify(transactions));
+                
+                // Clear intent
+                localStorage.removeItem('1268_intent');
+
+                // Show Success
+                document.getElementById('successOverlay').style.display = 'flex';
+                document.getElementById('successMsg').innerText = `Your booking for ${property.name} is confirmed. TXN ID: ${tx.id}`;
+
+            }, 2000); // simulate network delay
+        }
+    </script>
+</body>
+</html>
